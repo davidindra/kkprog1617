@@ -24,26 +24,28 @@ namespace enigma
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            try
+            try // for the case that input files contain some problem
             {
-                string[] file = System.IO.File.ReadAllLines(openFileDialog1.FileName);
-                string[] tables = splitByCommas(file[0]);
-                string[] inputStrings = file.Skip(1).ToArray();
+                string[] file = System.IO.File.ReadAllLines(openFileDialog1.FileName); // load input file
+                string[] tables = splitByCommas(file[0]); // get names of tables for encryption
+                string[] inputStrings = file.Skip(1).ToArray(); // get strings to encrypt
 
-                textBox1.Text = file[0];
+                textBox1.Text = file[0]; // show encryption settings
 
-                foreach (string inputString in inputStrings)
+                foreach (string inputString in inputStrings) // take each input string
                 {
-                    if (String.IsNullOrWhiteSpace(inputString)) continue;
+                    if (String.IsNullOrWhiteSpace(inputString)) continue; // if the line is blank, just skip it
 
                     string inputString2 = inputString;
                     string outputString = "";
                     
-                    foreach (string table in tables)
+                    foreach (string table in tables) // cycle through each encryption table
                     {
+                        // read encryption charpairs
                         Dictionary<char, char> tableCharmap = readCharmap(System.IO.File.ReadAllLines(Environment.CurrentDirectory + "/tables/" + table)[0]);
-                        
-                        for(int i = 0; i < inputString2.Length; i++)
+
+                        // apply that table to the input string
+                        for (int i = 0; i < inputString2.Length; i++)
                         {
                             char translatedChar = ' ';
                             if (!tableCharmap.TryGetValue(inputString2[i], out translatedChar))
@@ -56,13 +58,13 @@ namespace enigma
                             }
                         }
 
-                        //textBox1.Text += "\r\ndebug:" + outputString;
+                        //textBox1.Text += "\r\ndebug:" + outputString; // debug purposes
 
                         inputString2 = outputString;
                         outputString = "";
                     }
 
-                    textBox1.Text += "\r\nVSTUP=" + inputString + "\r\nVYSTUP=" + inputString2;
+                    textBox1.Text += "\r\nVSTUP=" + inputString + "\r\nVYSTUP=" + inputString2; // show the result
                 }
             }
             catch (Exception ex)
@@ -71,18 +73,18 @@ namespace enigma
             }
         }
 
-        private string[] splitByCommas(string input)
+        private string[] splitByCommas(string input) // just split the string by commas
         {
             string[] tmp = input.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             List<string> result = new List<string>();
             foreach (string item in tmp)
             {
-                result.Add(item.Trim());
+                result.Add(item.Trim()); // remove whitespaces
             }
             return result.ToArray();
         }
 
-        private Dictionary<char, char> readCharmap(string input)
+        private Dictionary<char, char> readCharmap(string input) // read input charmap
         {
             string[] charPairs = splitByCommas(input);
 
@@ -90,7 +92,7 @@ namespace enigma
 
             foreach (string charPair in charPairs)
             {
-                result.Add(charPair.First(), charPair.Last());
+                result.Add(charPair.First(), charPair.Last()); // split character pairs
             }
 
             return result;

@@ -61,6 +61,7 @@ namespace prase
                 PointF[] points = new PointF[pointsAmount];
                 float fAngle, fScale;
 
+                // spiral calculation
                 for (int i = 0; i < pointsAmount; i++)
                 {
                     fAngle = (float)(i * 2 * Math.PI / (pointsAmount / spins));
@@ -86,6 +87,7 @@ namespace prase
             Vector2 a = new Vector2(x1, y1);
             Vector2 b = new Vector2(x2, y2);
 
+            // draw the line
             for(float i = 0; i <= 1f; i += 0.01f)
             {
                 Vector2 c = (a - b) * i + a;
